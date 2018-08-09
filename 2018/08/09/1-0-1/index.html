@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="组件间通讯 父向子组件通讯  利用props   子向父组件通讯 利用 $emit子组件触发父组件的事件来实现对父组件通讯$emit 同时可以抛出一个值,父组件可以利用$event访问到该值  正常组件间的通讯   利用v-model进行表单间的通讯 —- 例如搜索组件,需要将组件内&amp;lt;input/&amp;gt;的值传递给 父组件  利用$refs父组件来触发子组件的事件来实现对父组件通讯 1234">
+<meta name="keywords" content="Vue,github">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Vue组件间通讯">
+<meta property="og:url" content="https://wimjiang.github.io/2018/08/09/1-0-1/index.html">
+<meta property="og:site_name" content="Wim Jiang&#39;s Blog">
+<meta property="og:description" content="组件间通讯 父向子组件通讯  利用props   子向父组件通讯 利用 $emit子组件触发父组件的事件来实现对父组件通讯$emit 同时可以抛出一个值,父组件可以利用$event访问到该值  正常组件间的通讯   利用v-model进行表单间的通讯 —- 例如搜索组件,需要将组件内&amp;lt;input/&amp;gt;的值传递给 父组件  利用$refs父组件来触发子组件的事件来实现对父组件通讯 1234">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-08-09T13:00:12.427Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Vue组件间通讯">
+<meta name="twitter:description" content="组件间通讯 父向子组件通讯  利用props   子向父组件通讯 利用 $emit子组件触发父组件的事件来实现对父组件通讯$emit 同时可以抛出一个值,父组件可以利用$event访问到该值  正常组件间的通讯   利用v-model进行表单间的通讯 —- 例如搜索组件,需要将组件内&amp;lt;input/&amp;gt;的值传递给 父组件  利用$refs父组件来触发子组件的事件来实现对父组件通讯 1234">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+          
+        
+    
+    <!-- title -->
+    <title>Vue组件间通讯</title>
+    <!-- styles -->
+    <link rel="stylesheet" href="/css/style.css">
+    <!-- rss -->
+    
+    
+</head>
+
+<body>
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="/Search/">Search</a></li>
+        
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" href="/2018/08/06/hello-world/"><i class="fa fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" href="#"><i class="fa fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=https://wimjiang.github.io/2018/08/09/1-0-1/"><i class="fa fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=https://wimjiang.github.io/2018/08/09/1-0-1/&text=Vue组件间通讯"><i class="fa fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=https://wimjiang.github.io/2018/08/09/1-0-1/&title=Vue组件间通讯"><i class="fa fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https://wimjiang.github.io/2018/08/09/1-0-1/&is_video=false&description=Vue组件间通讯"><i class="fa fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Vue组件间通讯&body=Check out this article: https://wimjiang.github.io/2018/08/09/1-0-1/"><i class="fa fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=https://wimjiang.github.io/2018/08/09/1-0-1/&title=Vue组件间通讯"><i class="fa fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=https://wimjiang.github.io/2018/08/09/1-0-1/&title=Vue组件间通讯"><i class="fa fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=https://wimjiang.github.io/2018/08/09/1-0-1/&title=Vue组件间通讯"><i class="fa fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=https://wimjiang.github.io/2018/08/09/1-0-1/&title=Vue组件间通讯"><i class="fa fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=https://wimjiang.github.io/2018/08/09/1-0-1/&name=Vue组件间通讯&description="><i class="fa fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#组件间通讯"><span class="toc-number">1.</span> <span class="toc-text">组件间通讯</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index width mx-auto px2 my4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        Vue组件间通讯
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">Wim Jiang's Blog</span>
+      </span>
+      
+    <div class="postdate">
+        <time datetime="2018-08-09T10:50:10.000Z" itemprop="datePublished">2018-08-09</time>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/Vue/">Vue</a>, <a class="tag-link" href="/tags/github/">github</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <h3 id="组件间通讯"><a href="#组件间通讯" class="headerlink" title="组件间通讯"></a>组件间通讯</h3><ul>
+<li><p>父向子组件通讯</p>
+<ul>
+<li>利用<code>props</code></li>
+</ul>
+</li>
+<li><p>子向父组件通讯</p>
+<p>利用 <code>$emit</code>子组件触发父组件的事件来实现对父组件通讯<br><code>$emit</code> 同时可以抛出一个值,父组件可以利用<code>$event</code>访问到该值</p>
+<ul>
+<li><p>正常组件间的通讯 </p>
+</li>
+<li><p>利用<code>v-model</code>进行表单间的通讯 —- 例如搜索组件,需要将组件内<code>&lt;input/&gt;</code>的值传递给 父组件</p>
+</li>
+<li><p>利用<code>$refs</code>父组件来触发子组件的事件来实现对父组件通讯</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 父组件</span></span><br><span class="line">&lt;template&gt;</span><br><span class="line">    &lt;div <span class="class"><span class="keyword">class</span></span>=<span class="string">""</span>&gt;</span><br><span class="line">    &lt;h1&gt;这是父组件&lt;<span class="regexp">/h1&gt;</span></span><br><span class="line"><span class="regexp">    &lt;p v-if="show"&gt;show message&lt;/</span>p&gt;</span><br><span class="line">    &lt;br/&gt;</span><br><span class="line">    &lt;childButton v-on:showHideMsg=<span class="string">"showHideMsg"</span> :text=<span class="string">"text1"</span>&gt;&lt;/childButton&gt;</span><br><span class="line">    &lt;br/&gt;</span><br><span class="line">    &lt;childButton v-on:showHideMsg=<span class="string">"show=$event"</span> :text=<span class="string">"text2"</span>&gt;&lt;/childButton&gt;</span><br><span class="line">    &lt;br/&gt;</span><br><span class="line">    &lt;CustomInput v-model=<span class="string">"output"</span>&gt;&lt;/CustomInput&gt;</span><br><span class="line">    &lt;div&gt;&#123;&#123; <span class="string">`父组件获取子组件input输入框内容: <span class="subst">$&#123;output&#125;</span>`</span> &#125;&#125;&lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">    &lt;br/</span>&gt;</span><br><span class="line">    &lt;Child ref=<span class="string">"child"</span>&gt;&lt;/Child&gt;</span><br><span class="line">    &lt;button type=<span class="string">"button"</span> name=<span class="string">"button"</span> @click=<span class="string">"getChildMsg"</span>&gt;click&lt;<span class="regexp">/button&gt;</span></span><br><span class="line"><span class="regexp">    &lt;p&gt;&#123;&#123; `父组件获取到的值$&#123;childMsg&#125;` &#125;&#125;&lt;/</span>p&gt;</span><br><span class="line">    &lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>template&gt;</span><br><span class="line">&lt;script&gt;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> childButton <span class="keyword">from</span> <span class="string">'./childButton.vue'</span></span><br><span class="line"><span class="keyword">import</span> CustomInput <span class="keyword">from</span> <span class="string">'./input.vue'</span></span><br><span class="line"><span class="keyword">import</span> Child <span class="keyword">from</span> <span class="string">'./child.vue'</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">    name: <span class="string">'parent'</span>,</span><br><span class="line">    components: &#123;</span><br><span class="line">        childButton, CustomInput, Child</span><br><span class="line">    &#125;,</span><br><span class="line">    data () &#123;</span><br><span class="line">        <span class="keyword">return</span> &#123;</span><br><span class="line">            output: <span class="string">''</span>,</span><br><span class="line">            show: <span class="literal">true</span>,</span><br><span class="line">            text1: <span class="string">'切换'</span>,</span><br><span class="line">            text2: <span class="string">'隐藏'</span>,</span><br><span class="line">            childMsg: <span class="string">''</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    methods: &#123;</span><br><span class="line">        showHideMsg (name) &#123;</span><br><span class="line">            <span class="keyword">this</span>.show = !<span class="keyword">this</span>.show</span><br><span class="line">        &#125;,</span><br><span class="line">        getChildMsg () &#123;</span><br><span class="line">            <span class="keyword">this</span>.childMsg = <span class="keyword">this</span>.$refs.child.childEvent()</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">&lt;<span class="regexp">/script&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//子组件-$emit</span></span><br><span class="line">&lt;template lang=<span class="string">"html"</span>&gt;</span><br><span class="line">    &lt;div <span class="class"><span class="keyword">class</span></span>=<span class="string">""</span>&gt;</span><br><span class="line">    &lt;p&gt;这是子组件- $emit &lt;<span class="regexp">/p&gt;</span></span><br><span class="line"><span class="regexp">    &lt;button type="button" name="button" @click="$emit('showHideMsg',false)"&gt;&#123;&#123;text&#125;&#125;&lt;/</span>button&gt;</span><br><span class="line">    &lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>template&gt;</span><br><span class="line">&lt;script&gt;</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">    props: [<span class="string">'show'</span>, <span class="string">'text'</span>],</span><br><span class="line">    data () &#123;</span><br><span class="line">        <span class="keyword">return</span> &#123;&#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">&lt;<span class="regexp">/script&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//子组件-表单</span></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* 组件内的 &lt;input&gt; 必须：</span></span><br><span class="line"><span class="comment">* 将其 value 特性绑定到一个名叫 value 的 prop 上</span></span><br><span class="line"><span class="comment">* 在其 input 事件被触发时，将新的值通过自定义的 input 事件抛出</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line">&lt;template lang=<span class="string">"html"</span>&gt;</span><br><span class="line">    &lt;div <span class="class"><span class="keyword">class</span></span>=<span class="string">""</span>&gt;</span><br><span class="line">    &lt;p&gt;这是子组件- input &lt;<span class="regexp">/p&gt;</span></span><br><span class="line"><span class="regexp">    &lt;input :value="value" v-on:input="$emit('input', $event.target.value)"&gt;</span></span><br><span class="line"><span class="regexp">    &lt;/</span>div&gt;</span><br><span class="line">&lt;<span class="regexp">/template&gt;</span></span><br><span class="line"><span class="regexp">&lt;script&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">export default &#123;</span></span><br><span class="line"><span class="regexp">    props: ['value'],</span></span><br><span class="line"><span class="regexp">    data () &#123;</span></span><br><span class="line"><span class="regexp">        return &#123;&#125;</span></span><br><span class="line"><span class="regexp">    &#125;</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br><span class="line"><span class="regexp">&lt;/</span>script&gt;</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//子组件-$refs</span></span><br><span class="line">&lt;template lang=<span class="string">"html"</span>&gt;</span><br><span class="line">    &lt;div <span class="class"><span class="keyword">class</span></span>=<span class="string">""</span>&gt;</span><br><span class="line">    &lt;p&gt;子组件,&lt;<span class="regexp">/p&gt;</span></span><br><span class="line"><span class="regexp">    &lt;p&gt;子组件消息&lt;/</span>p&gt;</span><br><span class="line">    &lt;input type=<span class="string">"text"</span> name=<span class="string">""</span> value=<span class="string">""</span> v-model=<span class="string">'childMsg'</span>&gt;</span><br><span class="line">    &lt;p&gt;&#123;&#123; <span class="string">`子组件中input: <span class="subst">$&#123;childMsg&#125;</span>`</span> &#125;&#125;&lt;<span class="regexp">/p&gt;</span></span><br><span class="line"><span class="regexp">    &lt;/</span>div&gt;</span><br><span class="line">&lt;<span class="regexp">/template&gt;</span></span><br><span class="line"><span class="regexp">&lt;script&gt;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">export default &#123;</span></span><br><span class="line"><span class="regexp">    data () &#123;</span></span><br><span class="line"><span class="regexp">        return &#123;</span></span><br><span class="line"><span class="regexp">            childMsg: ''</span></span><br><span class="line"><span class="regexp">        &#125;</span></span><br><span class="line"><span class="regexp">    &#125;,</span></span><br><span class="line"><span class="regexp">    methods: &#123;</span></span><br><span class="line"><span class="regexp">        childEvent () &#123;</span></span><br><span class="line"><span class="regexp">            return this.childMsg</span></span><br><span class="line"><span class="regexp">        &#125;</span></span><br><span class="line"><span class="regexp">    &#125;</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br><span class="line"><span class="regexp">&lt;/</span>script&gt;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>非父子组件间通讯</p>
+<ul>
+<li><p>利用events hus进行通讯</p>
+<p>官方demo : [<a href="https://cn.vuejs.org/v2/guide/migration.html#dispatch-%E5%92%8C-broadcast-%E6%9B%BF%E6%8D%A2" target="_blank" rel="noopener"><code>$dispatch</code> 和 <code>$broadcast</code> 替换 </a> </p>
+<p>通过实例化一个空的 <code>Vue</code> 实例来实现了一个事件分发接口 </p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 1. 实例化新的Vue对象</span></span><br><span class="line"><span class="keyword">import</span> Vue <span class="keyword">from</span> <span class="string">'vue'</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="keyword">new</span> Vue()</span><br><span class="line"></span><br><span class="line"><span class="comment">// 2. 利用插件 注册到全局Vue中</span></span><br><span class="line"><span class="keyword">var</span> eventsHub = &#123;</span><br><span class="line">    install (Vue, options) &#123;</span><br><span class="line">        Vue.prototype.$hub = <span class="keyword">new</span> Vue()</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">Vue.use(eventsHub);</span><br></pre></td></tr></table></figure>
+<p>在组件中，可以使用 <code>$emit</code>, <code>$on</code>, <code>$off</code> 分别来分发、监听、取消监听事件： </p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 分发组件 */</span></span><br><span class="line">...</span><br><span class="line">methods: &#123;</span><br><span class="line">  todo: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.$hubs.$emit(<span class="string">'events'</span>, params);  <span class="comment">//params是传递的参数</span></span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 监听组件 */</span></span><br><span class="line"><span class="comment">// 组件创建时监听</span></span><br><span class="line">...</span><br><span class="line">created: &#123;</span><br><span class="line">    <span class="keyword">this</span>.$hubs.$on(<span class="string">'events'</span>, params =&gt; &#123;</span><br><span class="line">        <span class="comment">//params是传递的参数 </span></span><br><span class="line">    &#125;);</span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;,</span><br><span class="line"><span class="comment">// 清除事件监听 以免造成</span></span><br><span class="line">beforeDestroy () &#123;</span><br><span class="line">  <span class="keyword">this</span>.$hubs.$off(<span class="string">'events'</span>);</span><br><span class="line">&#125;,</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>下面以购物车数量的简单加减为例:</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 文件结构</span></span><br><span class="line">Parent.vue</span><br><span class="line">├─ proList</span><br><span class="line">└─ proCard</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 父组件</span></span><br><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div <span class="class"><span class="keyword">class</span></span>=<span class="string">""</span>&gt;</span><br><span class="line">    &lt;h2&gt; 商品列表 &lt;<span class="regexp">/h2&gt;</span></span><br><span class="line"><span class="regexp">    &lt;proList&gt;&lt;/</span>proList&gt;</span><br><span class="line">    &lt;br&gt;</span><br><span class="line">    &lt;proCard&gt;&lt;/proCard&gt;</span><br><span class="line">    &lt;br&gt;</span><br><span class="line">  &lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>template&gt;</span><br><span class="line">&lt;script&gt;</span><br><span class="line"><span class="keyword">import</span> proList <span class="keyword">from</span> <span class="string">'./proList.vue'</span></span><br><span class="line"><span class="keyword">import</span> proCard <span class="keyword">from</span> <span class="string">'./proCard.vue'</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">  components: &#123; proList, proCard &#125;,</span><br><span class="line">  data () &#123;</span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">      produtions: <span class="built_in">JSON</span>.parse(<span class="built_in">window</span>.localStorage.getItem(<span class="string">'card'</span>)) || []</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  computed: &#123;</span><br><span class="line">    getALLTotal () &#123;</span><br><span class="line">      <span class="keyword">let</span> total = <span class="number">0</span></span><br><span class="line">      <span class="keyword">this</span>.produtions.forEach(<span class="function"><span class="params">item</span> =&gt;</span> &#123;</span><br><span class="line">        total += (item.price * item.num)</span><br><span class="line">      &#125;)</span><br><span class="line">      <span class="keyword">return</span> total</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  methods: &#123;</span><br><span class="line">    changeNum (num) &#123;</span><br><span class="line">      num.value &lt;= <span class="number">0</span> ? (num.produt.num = <span class="number">1</span>) : (num.produt.num = num.value)</span><br><span class="line">    &#125;,</span><br><span class="line">    delProduct (product) &#123;</span><br><span class="line">      <span class="keyword">this</span>.produtions.splice(<span class="keyword">this</span>.produtions.findIndex(<span class="function"><span class="params">item</span> =&gt;</span> item.title === product.title), <span class="number">1</span>)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">&lt;<span class="regexp">/script&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// proList 商品列表组件</span></span><br><span class="line">&lt;template lang=<span class="string">"html"</span>&gt;</span><br><span class="line">  &lt;div <span class="class"><span class="keyword">class</span></span>=<span class="string">"pro-list"</span>&gt;</span><br><span class="line">    &lt;ul&gt;</span><br><span class="line">      &lt;li v-<span class="keyword">for</span>=<span class="string">"pro in produts"</span> :key=<span class="string">"pro.title"</span>&gt;</span><br><span class="line">        &lt;h4&gt;&#123;&#123; pro.title &#125;&#125;&lt;<span class="regexp">/h4&gt;</span></span><br><span class="line"><span class="regexp">        &lt;p&gt;&#123;&#123; pro.desc &#125;&#125;&lt;/</span>p&gt;</span><br><span class="line">        &lt;p&gt;价格: &#123;&#123; pro.price &#125;&#125;&lt;<span class="regexp">/p&gt;</span></span><br><span class="line"><span class="regexp">        &lt;button type="button" @click="addCard(pro)"&gt;加入购物车&lt;/</span>button&gt;</span><br><span class="line">      &lt;<span class="regexp">/li&gt;</span></span><br><span class="line"><span class="regexp">    &lt;/u</span>l&gt;</span><br><span class="line">  &lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>template&gt;</span><br><span class="line">&lt;script&gt;</span><br><span class="line"><span class="keyword">import</span> Bus <span class="keyword">from</span> <span class="string">'./bus'</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">  data () &#123;</span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">      produts: [</span><br><span class="line">        &#123;</span><br><span class="line">          title: <span class="string">'商品1111'</span>,</span><br><span class="line">          desc: <span class="string">'描述1111'</span>,</span><br><span class="line">          price: <span class="number">49</span>,</span><br><span class="line">          num: <span class="number">1</span></span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">          title: <span class="string">'商品2222'</span>,</span><br><span class="line">          desc: <span class="string">'描述2222'</span>,</span><br><span class="line">          price: <span class="number">59</span>,</span><br><span class="line">          num: <span class="number">1</span></span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">          title: <span class="string">'商品3333'</span>,</span><br><span class="line">          desc: <span class="string">'描述3333'</span>,</span><br><span class="line">          price: <span class="number">69</span>,</span><br><span class="line">          num: <span class="number">1</span></span><br><span class="line">        &#125;</span><br><span class="line">      ]</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  methods: &#123;</span><br><span class="line">    addCard (pro) &#123;</span><br><span class="line">      Bus.$emit(<span class="string">'add'</span>, pro)</span><br><span class="line">      <span class="comment">// this.$hubs.$emit('add', pro)</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">&lt;<span class="regexp">/script&gt;</span></span><br><span class="line"><span class="regexp">&lt;style lang="stylus" scoped&gt;</span></span><br><span class="line"><span class="regexp">.pro-list</span></span><br><span class="line"><span class="regexp">  background: #fafafa</span></span><br><span class="line"><span class="regexp">  padding: 30px</span></span><br><span class="line"><span class="regexp">&lt;/</span>style&gt;</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// proCard 购物车组件</span></span><br><span class="line">&lt;template lang=<span class="string">"html"</span>&gt;</span><br><span class="line">  &lt;div <span class="class"><span class="keyword">class</span></span>=<span class="string">"pro-card"</span>&gt;</span><br><span class="line">    &lt;h4&gt;购物车&lt;<span class="regexp">/h4&gt;</span></span><br><span class="line"><span class="regexp">    &lt;strong&gt;数量: &#123;&#123; getNum() &#125;&#125;&lt;/</span>strong&gt;</span><br><span class="line">    &lt;p&gt; &#123;&#123; msg &#125;&#125; &lt;<span class="regexp">/p&gt;</span></span><br><span class="line"><span class="regexp">  &lt;/</span>div&gt;</span><br><span class="line">&lt;<span class="regexp">/template&gt;</span></span><br><span class="line"><span class="regexp">&lt;script&gt;</span></span><br><span class="line"><span class="regexp">import Bus from './</span>bus<span class="string">'</span></span><br><span class="line"><span class="string">export default &#123;</span></span><br><span class="line"><span class="string">  data () &#123;</span></span><br><span class="line"><span class="string">    return &#123;</span></span><br><span class="line"><span class="string">      msg: JSON.parse(window.localStorage.getItem('</span>card<span class="string">')) || []</span></span><br><span class="line"><span class="string">    &#125;</span></span><br><span class="line"><span class="string">  &#125;,</span></span><br><span class="line"><span class="string">  methods: &#123;</span></span><br><span class="line"><span class="string">    getNum () &#123;</span></span><br><span class="line"><span class="string">      let count = 0</span></span><br><span class="line"><span class="string">      this.msg.forEach(item =&gt; &#123;</span></span><br><span class="line"><span class="string">        count += item.num</span></span><br><span class="line"><span class="string">      &#125;)</span></span><br><span class="line"><span class="string">      return count</span></span><br><span class="line"><span class="string">    &#125;</span></span><br><span class="line"><span class="string">  &#125;,</span></span><br><span class="line"><span class="string">  mounted () &#123;</span></span><br><span class="line"><span class="string">    Bus.$on('</span>add<span class="string">', msg =&gt; &#123;</span></span><br><span class="line"><span class="string">    // this.$hubs.$on('</span>add<span class="string">', msg =&gt; &#123;</span></span><br><span class="line"><span class="string">      let index = this.msg.findIndex(item =&gt; item.title === msg.title)</span></span><br><span class="line"><span class="string">      if (index &gt;=0) &#123;</span></span><br><span class="line"><span class="string">        this.msg[index].num += 1</span></span><br><span class="line"><span class="string">      &#125; else &#123;</span></span><br><span class="line"><span class="string">        this.msg.push(msg)</span></span><br><span class="line"><span class="string">      &#125;</span></span><br><span class="line"><span class="string">      window.localStorage.setItem('</span>card<span class="string">', JSON.stringify(this.msg))</span></span><br><span class="line"><span class="string">    &#125;)</span></span><br><span class="line"><span class="string">  &#125;</span></span><br><span class="line"><span class="string">&#125;</span></span><br><span class="line"><span class="string">&lt;/script&gt;</span></span><br><span class="line"><span class="string">&lt;style lang="stylus" scoped&gt;</span></span><br><span class="line"><span class="string">.pro-card</span></span><br><span class="line"><span class="string">  border: 1px solid #333</span></span><br><span class="line"><span class="string">  padding: 10px;</span></span><br><span class="line"><span class="string">  margin: 20px</span></span><br><span class="line"><span class="string">&lt;/style&gt;</span></span><br></pre></td></tr></table></figure>
+<p>当复杂场景下的通讯,例如购物车,组件间的通讯非常高频,这时候引入vuex</p>
+<p>相关vuex的文章待续…</p>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+</article>
+
+
+
+    </div>
+    
+      <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="/Search/">Search</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#组件间通讯"><span class="toc-number">1.</span> <span class="toc-text">组件间通讯</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=https://wimjiang.github.io/2018/08/09/1-0-1/"><i class="fa fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=https://wimjiang.github.io/2018/08/09/1-0-1/&text=Vue组件间通讯"><i class="fa fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=https://wimjiang.github.io/2018/08/09/1-0-1/&title=Vue组件间通讯"><i class="fa fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https://wimjiang.github.io/2018/08/09/1-0-1/&is_video=false&description=Vue组件间通讯"><i class="fa fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Vue组件间通讯&body=Check out this article: https://wimjiang.github.io/2018/08/09/1-0-1/"><i class="fa fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=https://wimjiang.github.io/2018/08/09/1-0-1/&title=Vue组件间通讯"><i class="fa fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=https://wimjiang.github.io/2018/08/09/1-0-1/&title=Vue组件间通讯"><i class="fa fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=https://wimjiang.github.io/2018/08/09/1-0-1/&title=Vue组件间通讯"><i class="fa fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=https://wimjiang.github.io/2018/08/09/1-0-1/&title=Vue组件间通讯"><i class="fa fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=https://wimjiang.github.io/2018/08/09/1-0-1/&name=Vue组件间通讯&description="><i class="fa fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+      <ul>
+        <li id="toc"><a class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa fa-list fa-lg" aria-hidden="true"></i> TOC</a></li>
+        <li id="share"><a class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa fa-share-alt fa-lg" aria-hidden="true"></i> Share</a></li>
+        <li id="top" style="display:none"><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a></li>
+        <li id="menu"><a class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa fa-bars fa-lg" aria-hidden="true"></i> Menu</a></li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+    
+    <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy; 2018 Wim Jiang
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="/Search/">Search</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>
+<!-- styles -->
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/meslo-LG/styles.css">
+<link rel="stylesheet" href="/lib/justified-gallery/justifiedGallery.min.css">
+
+<!-- jquery -->
+<script src="/lib/jquery/jquery.min.js"></script>
+<script src="/lib/justified-gallery/jquery.justifiedGallery.min.js"></script>
+<script src="/js/main.js"></script>
+
+
+    <!-- Google Analytics -->
+    <script type="text/javascript">
+        (function(i,s,o,g,r,a,m) {i['GoogleAnalyticsObject']=r;i[r]=i[r]||function() {
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+        ga('create', 'UA-37473492-6', 'auto');
+        ga('send', 'pageview');
+    </script>
+
+
+
